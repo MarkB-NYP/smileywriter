@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<!-- Code by Mark Bosco. 15/9/2020 :) Writer V1.2 (Copy and Clear are buttons instead of 'a' links)-->
+<html>
+<head>
+<title>:) Writer (V.1.2)</title>
+<style>
+*{
+  background-color: #e6e6e6;
+  font-family: 'Georgia'
+
+}
+
+  textarea{
+    border: none;
+    outline: none;
+    background-color: #ededed;
+    padding: 5px;
+    width: 98%;
+  }
+  .writespace{
+    margin: auto;
+    width: 35%;
+  }
+  #titletext{
+    color:black;
+    resize: none;
+    font-size: 220%;
+  }
+  #maintext{
+    color:black;
+    resize: none;
+    font-size: 200%;
+  }
+  .controls{
+    width: 100%;
+    background-color: red;
+    text-align: center;
+    font-size: 180%;
+    color: #e6e6e6;
+    background-color: red;
+    border-style: none;
+    outline-style: none;
+    padding-bottom: 5px;
+  }
+
+  #bottomcontrols{
+    margin: auto;
+    width: 35%;
+    margin-top: 1%;
+  }
+  #bottomcontrols button:hover{
+    color:black;
+  }
+
+
+  #windmill{
+    float: left;
+    margin: auto;
+    margin-top: 1%;
+    color:#e6e6e6;
+    font-size: 48px;
+    background-color: red;
+    width: 55px;
+    text-align: center;
+    padding: 5px;
+  }
+
+  #zoom{
+    margin: auto;
+    width: 35%;
+    margin-top: 1%;
+    font-size: 200%;
+    color:black;
+  }
+  #zoom button{
+    font-size: 120%;
+    padding: 5px;
+    background-color: red;
+    color: #e6e6e6;
+    width: 12%;
+    border-style: none;
+    outline-style: none;
+
+  }
+  #keybreak{
+    height: 5%;
+  }
+  #zoom button:hover{
+    color: black;
+  }
+  #font{
+    text-align: right;
+    padding-top: 10px;
+  }
+  #wordsleft{
+    text-align: right;
+    float: right;
+    font-size: 150%;
+    margin: auto;
+    padding: 5px;
+    padding-bottom: 10px;
+  }
+</style>
+<script>
+var newLineNeeded = 0;
+var size = 220;
+var wordlimit = 50;
+var titlelimit = 7;
+function copyall(){
+  var title = document.getElementById('titletext');
+  var text = document.getElementById('maintext');
+  var textSaved = text.value;
+  text.value = title.value+' '+text.value;
+  text.select();
+  text.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  window.alert('Copied Text: \r\n'+ text.value);
+  text.value = textSaved;
+  document.getElementById('donebutton').innerHTML='copied';
+}
+
+function clearall(){
+  var text = document.getElementById('maintext')
+  var title = document.getElementById('titletext')
+  text.value = '';
+  title.value = '';
+  document.getElementById('wordsleft').innerHTML='+50';
+}
+
+
+function plus(){
+  size += 10;
+  document.getElementById("maintext").style.fontSize = size+'%';
+  document.getElementById("titletext").style.fontSize = size+20+'%';
+  OnInput();
+  var newLineNeeded = 0;
+}
+
+
+function minus(){
+  size -= 10;
+  document.getElementById("maintext").style.fontSize = size+'%';
+  document.getElementById("titletext").style.fontSize = size+20+'%';
+}
+
+</script>
+</head>
+
+<body>
+    <div id='zoom'>
+    <p id='windmill'>:)</p>
+    <p id='font'>&nbsp&nbsp&nbspFont&nbsp
+      <span class='zoombutton'><button id='minus' onmousedown="minus()">-</button>&nbsp
+  <span class='zoombutton'>
+    <button id='plus' onmousedown="plus()">+</button></span>
+  </span>
+  </p>
+  </div>
+
+</div>
+  <div class='writespace'>
+  <textarea id="titletext" name="maintext" rows='3' placeholder="HEAD max 7w"  maxlength='50
+  '></textarea>
+  <br><br>
+  <textarea id="maintext" name="maintext" rows='4' placeholder="Text max 50w"></textarea>
+  <p id='wordsleft' >+50</p>
+  </div>
+  <div id='bottomcontrols'>
+    <button class='controls' id='donebutton' onclick="copyall()">copy</button>
+    <div id='keybreak'><p></p></div>
+    <button class='controls' id='clearbutton' onclick="clearall()">clear</button>
+  </div>
+
+<script>
+
+var text = document.getElementById('maintext');
+text.setAttribute('style', 'height:' + (text.scrollHeight) + 'px;overflow-y:hidden;');
+text.addEventListener("input", OnInput, false);
+var plusbutton = document.getElementById("plus");
+plusbutton.addEventListener("click", OnInput);
+
+
+function OnInput() {
+  document.getElementById('donebutton').innerHTML='copy';
+  var text = document.getElementById('maintext');
+  text.style.height = 'auto';
+  text.style.height = (text.scrollHeight) + 'px';
+  var words = text.value.split(" ").length;
+  var wordsleft = document.getElementById('wordsleft');
+  wordsleft.innerHTML='+'+(wordlimit-words+1);
+  console.log(words)
+  if(words>wordlimit){
+    text.value = text.value.slice(0, -1);
+    wordsleft.innerHTML='0';
+  }
+}
+
+var title = document.getElementById('titletext');
+title.addEventListener("input", OnInputTitle, false);
+
+function OnInputTitle() {
+  document.getElementById('donebutton').innerHTML='copy';
+  var title = document.getElementById('titletext');
+  var words = title.value.split(" ").length;
+  if(words>titlelimit){
+    title.value = title.value.slice(0, -1);
+  }
+}
+
+
+var stages = [':)',':D',';D',';)',':P',':O',':D',':]'];
+var currentstage = 0
+var intervalID = window.setInterval(animateWindmill, 1000);
+var windmill = document.getElementById('windmill');
+function animateWindmill() {
+  windmill.innerHTML = (stages[currentstage]);
+  currentstage += 1;
+  if(currentstage == (stages.length)){
+    currentstage = 0;
+  }
+}
+
+</script>
+</body>
+</html>
